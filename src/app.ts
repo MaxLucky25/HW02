@@ -26,25 +26,6 @@ let posts = [
     },
 ];
 
-// Хэлпер для форматирования ошибок валидации с сортировкой по order (если передан)
-const getFormattedErrors = (req: Request, order?: string[]) => {
-    const errors = validationResult(req);
-    let formatted = errors.array().map((error: any) => ({
-        message: error.msg,
-        field: error.param,
-    }));
-    if (order) {
-        formatted.sort((a, b) => {
-            const indexA = order.indexOf(a.field);
-            const indexB = order.indexOf(b.field);
-            // Если какое-то поле не найдено в order, оставляем без изменений
-            if (indexA === -1 || indexB === -1) return 0;
-            return indexA - indexB;
-        });
-    }
-    return formatted;
-};
-
 // ---------- Blog CRUD Routes ----------
 
 // GET /blogs - открытый эндпоинт
@@ -81,8 +62,14 @@ app.post('/blogs',
         .matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
         .withMessage('website url does not match the template'),
     (req: Request, res: Response): void => {
-        const formattedErrors = getFormattedErrors(req, ['websiteUrl', 'name']);
-        if (formattedErrors.length) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const formattedErrors = errors.array().map(error => ({
+                message: error.msg,
+                field: (error as unknown as { param: string }).param,
+            }));
+            // Сортируем ошибки по полю field, чтобы они были в нужном порядке
+            formattedErrors.sort((a, b) => a.field.localeCompare(b.field));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
@@ -105,8 +92,12 @@ app.get('/blogs/:id',
         .isString()
         .withMessage('Invalid blog id'),
     (req: Request, res: Response): void => {
-        const formattedErrors = getFormattedErrors(req);
-        if (formattedErrors.length) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const formattedErrors = errors.array().map(error => ({
+                message: error.msg,
+                field: (error as unknown as { param: string }).param,
+            }));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
@@ -153,8 +144,14 @@ app.put('/blogs/:id',
         .matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
         .withMessage('website url does not match the template'),
     (req: Request, res: Response): void => {
-        const formattedErrors = getFormattedErrors(req, ['websiteUrl', 'name']);
-        if (formattedErrors.length) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const formattedErrors = errors.array().map(error => ({
+                message: error.msg,
+                field: (error as unknown as { param: string }).param,
+            }));
+            // Сортируем ошибки по полю field, чтобы они были в нужном порядке
+            formattedErrors.sort((a, b) => a.field.localeCompare(b.field));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
@@ -236,8 +233,14 @@ app.post('/posts',
             return true;
         }),
     (req: Request, res: Response): void => {
-        const formattedErrors = getFormattedErrors(req, ['shortDescription', 'title']);
-        if (formattedErrors.length) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const formattedErrors = errors.array().map(error => ({
+                message: error.msg,
+                field: (error as unknown as { param: string }).param,
+            }));
+            // Сортируем ошибки по полю field, чтобы они были в нужном порядке
+            formattedErrors.sort((a, b) => a.field.localeCompare(b.field));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
@@ -310,8 +313,14 @@ app.put('/posts/:id',
             return true;
         }),
     (req: Request, res: Response): void => {
-        const formattedErrors = getFormattedErrors(req, ['shortDescription', 'title']);
-        if (formattedErrors.length) {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const formattedErrors = errors.array().map(error => ({
+                message: error.msg,
+                field: (error as unknown as { param: string }).param,
+            }));
+            // Сортируем ошибки по полю field, чтобы они были в нужном порядке
+            formattedErrors.sort((a, b) => a.field.localeCompare(b.field));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
