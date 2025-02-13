@@ -41,16 +41,22 @@ app.post('/blogs',
         realm: 'Private Area',
     }),
     body('name')
+        .exists({ checkFalsy: true }).withMessage('name is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 15 })
         .withMessage('name is too long'),
     body('description')
+        .exists({ checkFalsy: true }).withMessage('description is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 500 })
         .withMessage('description is too long'),
     body('websiteUrl')
+        .exists({ checkFalsy: true }).withMessage('websiteUrl is required')
+        .bail()
         .isString()
         .trim()
         .matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
@@ -65,7 +71,6 @@ app.post('/blogs',
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
-
         const newBlog = {
             id: String(blogs.length + 1),
             name: req.body.name,
@@ -80,6 +85,8 @@ app.post('/blogs',
 // GET /blogs/:id - открытый эндпоинт
 app.get('/blogs/:id',
     param('id')
+        .exists({ checkFalsy: true }).withMessage('id is required')
+        .bail()
         .isString()
         .withMessage('Invalid blog id'),
     (req: Request, res: Response): void => {
@@ -92,7 +99,6 @@ app.get('/blogs/:id',
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
-
         const blog = blogs.find(b => b.id === req.params.id);
         if (!blog) {
             res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'id' }] });
@@ -110,19 +116,27 @@ app.put('/blogs/:id',
         realm: 'Private Area',
     }),
     param('id')
+        .exists({ checkFalsy: true }).withMessage('id is required')
+        .bail()
         .isString()
         .withMessage('Invalid blog id'),
     body('name')
+        .exists({ checkFalsy: true }).withMessage('name is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 15 })
         .withMessage('name is too long'),
     body('description')
+        .exists({ checkFalsy: true }).withMessage('description is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 500 })
         .withMessage('description is too long'),
     body('websiteUrl')
+        .exists({ checkFalsy: true }).withMessage('websiteUrl is required')
+        .bail()
         .isString()
         .trim()
         .matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+(\/[a-zA-Z0-9_-]+)*\/?$/)
@@ -137,17 +151,14 @@ app.put('/blogs/:id',
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
-
         const blog = blogs.find(b => b.id === req.params.id);
         if (!blog) {
             res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'id' }] });
             return;
         }
-
         blog.name = req.body.name;
         blog.description = req.body.description;
         blog.websiteUrl = req.body.websiteUrl;
-
         res.status(204).send();
     }
 );
@@ -165,7 +176,6 @@ app.delete('/blogs/:id',
             res.status(404).json({ errorsMessages: [{ message: 'Blog not found', field: 'id' }] });
             return;
         }
-
         blogs.splice(blogIndex, 1);
         res.status(204).send();
     }
@@ -186,21 +196,29 @@ app.post('/posts',
         realm: 'Private Area',
     }),
     body('title')
+        .exists({ checkFalsy: true }).withMessage('title is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 30 })
         .withMessage('title is too long'),
     body('shortDescription')
+        .exists({ checkFalsy: true }).withMessage('shortDescription is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 100 })
         .withMessage('shortDescription is too long'),
     body('content')
+        .exists({ checkFalsy: true }).withMessage('content is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 1000 })
         .withMessage('content is too long'),
     body('blogId')
+        .exists({ checkFalsy: true }).withMessage('blogId is required')
+        .bail()
         .isString()
         .withMessage('Invalid blogId')
         .custom(async (value: string) => {
@@ -220,13 +238,11 @@ app.post('/posts',
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
-
         const blog = blogs.find(b => b.id === req.body.blogId);
         if (!blog) {
             res.status(400).json({ errorsMessages: [{ message: 'Blog does not exist', field: 'blogId' }] });
             return;
         }
-
         const newPost = {
             id: String(posts.length + 1),
             title: req.body.title,
@@ -258,21 +274,29 @@ app.put('/posts/:id',
         realm: 'Private Area',
     }),
     body('title')
+        .exists({ checkFalsy: true }).withMessage('title is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 30 })
         .withMessage('Title is too long'),
     body('shortDescription')
+        .exists({ checkFalsy: true }).withMessage('shortDescription is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 100 })
-        .withMessage('Short description is too long'),
+        .withMessage('shortDescription is too long'),
     body('content')
+        .exists({ checkFalsy: true }).withMessage('content is required')
+        .bail()
         .isString()
         .trim()
         .isLength({ max: 1000 })
         .withMessage('Content is too long'),
     body('blogId')
+        .exists({ checkFalsy: true }).withMessage('blogId is required')
+        .bail()
         .isString()
         .withMessage('Blog ID is required')
         .custom(async (value: string) => {
@@ -292,13 +316,11 @@ app.put('/posts/:id',
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
         }
-
         const postIndex = posts.findIndex(p => p.id === req.params.id);
         if (postIndex === -1) {
             res.status(404).send('Post not found');
             return;
         }
-
         const updatedPost = {
             ...posts[postIndex],
             title: req.body.title,
@@ -329,7 +351,7 @@ app.delete('/posts/:id',
     }
 );
 
-// DELETE /testing/all-data - очищает и блоги, и посты (защищён)
+// DELETE /testing/all-data - очищает и блоги, и посты (открытый эндпоинт)
 app.delete('/testing/all-data',
     (req: Request, res: Response): void => {
         posts.length = 0;
