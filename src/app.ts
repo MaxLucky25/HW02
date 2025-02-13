@@ -45,15 +45,13 @@ app.post('/blogs',
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 15 })
-        .withMessage('name is too long'),
+        .isLength({ max: 15 }).withMessage('name is too long'),
     body('description')
         .exists({ checkFalsy: true }).withMessage('description is required')
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 500 })
-        .withMessage('description is too long'),
+        .isLength({ max: 500 }).withMessage('description is too long'),
     body('websiteUrl')
         .exists({ checkFalsy: true }).withMessage('websiteUrl is required')
         .bail()
@@ -64,11 +62,11 @@ app.post('/blogs',
     (req: Request, res: Response): void => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const formattedErrors = errors.array().map(error => ({
-                message: error.msg,
-                field: (error as unknown as { param: string }).param,
+            const formattedErrors = errors.array({ onlyFirstError: true }).map(e => ({
+                message: e.msg,
+                field: (e as unknown as { param: string }).param,
             }));
-            // Сортируем ошибки по полю field, чтобы они были в нужном порядке
+            // Если требуется определённый порядок – сортируем (например, alphabetically)
             formattedErrors.sort((a, b) => a.field.localeCompare(b.field));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
@@ -89,14 +87,13 @@ app.get('/blogs/:id',
     param('id')
         .exists({ checkFalsy: true }).withMessage('id is required')
         .bail()
-        .isString()
-        .withMessage('Invalid blog id'),
+        .isString().withMessage('Invalid blog id'),
     (req: Request, res: Response): void => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const formattedErrors = errors.array().map(error => ({
-                message: error.msg,
-                field: (error as unknown as { param: string }).param,
+            const formattedErrors = errors.array({ onlyFirstError: true }).map(e => ({
+                message: e.msg,
+                field: (e as unknown as { param: string }).param,
             }));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
@@ -120,22 +117,19 @@ app.put('/blogs/:id',
     param('id')
         .exists({ checkFalsy: true }).withMessage('id is required')
         .bail()
-        .isString()
-        .withMessage('Invalid blog id'),
+        .isString().withMessage('Invalid blog id'),
     body('name')
         .exists({ checkFalsy: true }).withMessage('name is required')
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 15 })
-        .withMessage('name is too long'),
+        .isLength({ max: 15 }).withMessage('name is too long'),
     body('description')
         .exists({ checkFalsy: true }).withMessage('description is required')
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 500 })
-        .withMessage('description is too long'),
+        .isLength({ max: 500 }).withMessage('description is too long'),
     body('websiteUrl')
         .exists({ checkFalsy: true }).withMessage('websiteUrl is required')
         .bail()
@@ -146,11 +140,10 @@ app.put('/blogs/:id',
     (req: Request, res: Response): void => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const formattedErrors = errors.array().map(error => ({
-                message: error.msg,
-                field: (error as unknown as { param: string }).param,
+            const formattedErrors = errors.array({ onlyFirstError: true }).map(e => ({
+                message: e.msg,
+                field: (e as unknown as { param: string }).param,
             }));
-            // Сортируем ошибки по полю field, чтобы они были в нужном порядке
             formattedErrors.sort((a, b) => a.field.localeCompare(b.field));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
@@ -204,27 +197,23 @@ app.post('/posts',
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 30 })
-        .withMessage('title is too long'),
+        .isLength({ max: 30 }).withMessage('title is too long'),
     body('shortDescription')
         .exists({ checkFalsy: true }).withMessage('shortDescription is required')
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 100 })
-        .withMessage('shortDescription is too long'),
+        .isLength({ max: 100 }).withMessage('shortDescription is too long'),
     body('content')
         .exists({ checkFalsy: true }).withMessage('content is required')
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 1000 })
-        .withMessage('content is too long'),
+        .isLength({ max: 1000 }).withMessage('content is too long'),
     body('blogId')
         .exists({ checkFalsy: true }).withMessage('blogId is required')
         .bail()
-        .isString()
-        .withMessage('Invalid blogId')
+        .isString().withMessage('Invalid blogId')
         .custom(async (value: string) => {
             const blogExists = blogs.find(blog => blog.id === value);
             if (!blogExists) {
@@ -235,11 +224,10 @@ app.post('/posts',
     (req: Request, res: Response): void => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const formattedErrors = errors.array().map(error => ({
-                message: error.msg,
-                field: (error as unknown as { param: string }).param,
+            const formattedErrors = errors.array({ onlyFirstError: true }).map(e => ({
+                message: e.msg,
+                field: (e as unknown as { param: string }).param,
             }));
-            // Сортируем ошибки по полю field, чтобы они были в нужном порядке
             formattedErrors.sort((a, b) => a.field.localeCompare(b.field));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
@@ -284,27 +272,23 @@ app.put('/posts/:id',
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 30 })
-        .withMessage('Title is too long'),
+        .isLength({ max: 30 }).withMessage('Title is too long'),
     body('shortDescription')
         .exists({ checkFalsy: true }).withMessage('shortDescription is required')
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 100 })
-        .withMessage('shortDescription is too long'),
+        .isLength({ max: 100 }).withMessage('shortDescription is too long'),
     body('content')
         .exists({ checkFalsy: true }).withMessage('content is required')
         .bail()
         .isString()
         .trim()
-        .isLength({ max: 1000 })
-        .withMessage('Content is too long'),
+        .isLength({ max: 1000 }).withMessage('Content is too long'),
     body('blogId')
         .exists({ checkFalsy: true }).withMessage('blogId is required')
         .bail()
-        .isString()
-        .withMessage('Blog ID is required')
+        .isString().withMessage('Blog ID is required')
         .custom(async (value: string) => {
             const blogExists = blogs.find(blog => blog.id === value);
             if (!blogExists) {
@@ -315,11 +299,10 @@ app.put('/posts/:id',
     (req: Request, res: Response): void => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const formattedErrors = errors.array().map(error => ({
-                message: error.msg,
-                field: (error as unknown as { param: string }).param,
+            const formattedErrors = errors.array({ onlyFirstError: true }).map(e => ({
+                message: e.msg,
+                field: (e as unknown as { param: string }).param,
             }));
-            // Сортируем ошибки по полю field, чтобы они были в нужном порядке
             formattedErrors.sort((a, b) => a.field.localeCompare(b.field));
             res.status(400).json({ errorsMessages: formattedErrors });
             return;
@@ -359,13 +342,11 @@ app.delete('/posts/:id',
     }
 );
 
-// DELETE /testing/all-data - очищает и блоги, и посты (открытый эндпоинт)
-app.delete('/testing/all-data',
-    (req: Request, res: Response): void => {
-        posts.length = 0;
-        blogs.length = 0;
-        res.status(204).send();
-    }
-);
+// DELETE /testing/all-data - открытый эндпоинт
+app.delete('/testing/all-data', (req: Request, res: Response): void => {
+    blogs = [];
+    posts = [];
+    res.status(204).send();
+});
 
 export default app;
