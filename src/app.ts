@@ -331,11 +331,6 @@ app.delete('/posts/:id',
 
 // DELETE /testing/all-data - очищает и блоги, и посты (защищён)
 app.delete('/testing/all-data',
-    basicAuth({
-        users: { 'admin': 'qwerty' },
-        challenge: true,
-        realm: 'Private Area',
-    }),
     (req: Request, res: Response): void => {
         posts.length = 0;
         blogs.length = 0;
