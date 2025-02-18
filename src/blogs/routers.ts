@@ -14,7 +14,7 @@ blogsRouter.get("/", async (req, res) => {
 
 blogsRouter.get("/:id", async (req, res) => {
     const blog = await blogRepository.getById(req.params.id);
-    blog ? res.json(blog) : res.status(404);
+    blog ? res.json(blog) : res.sendStatus(404);
 });
 
 blogsRouter.post("/",
@@ -33,13 +33,13 @@ blogsRouter.put("/:id",
     inputCheckErrorsMiddleware,
     async (req, res) => {
         const updated = await blogRepository.update(req.params.id, req.body);
-        updated ? res.status(204): res.status(404);
+        updated ? res.sendStatus(204) : res.sendStatus(404);
     }
     );
 
 blogsRouter.delete("/:id",
     authMiddleware,
     async (req, res) => {
-    const deleted = await blogRepository.delete(req.params.id);
-    deleted ? res.status(204) : res.status(404);
+        const deleted = await blogRepository.delete(req.params.id);
+        deleted ? res.sendStatus(204) : res.sendStatus(404);
     })

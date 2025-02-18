@@ -6,11 +6,11 @@ export const blogRepository = {
         return db.blogs.map(this.mapToOutput);
     },
 
-    async create(imput: BlogInputModel): Promise<BlogViewModel> {
+    async create(input: BlogInputModel): Promise<BlogViewModel> {
         const newBlog: BlogDBType ={
-            ...imput,
+            ...input,
             id: Date.now().toString(),
-            createdAt: new Date(),
+            createdAt: new Date()
         };
         db.blogs.push(newBlog);
         return this.mapToOutput(newBlog);
@@ -33,7 +33,7 @@ export const blogRepository = {
 
     async delete(id: string): Promise<boolean> {
         const index = db.blogs.findIndex(b => b.id === id);
-        if (index > -1) return false;
+        if (index === -1) return false;
 
         db.blogs.splice(index, 1);
         return true;
