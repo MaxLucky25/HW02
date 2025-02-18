@@ -14,9 +14,9 @@ export const postValidators = [
         .notEmpty().withMessage('Short description is required'),
 
     body('content')
-    .trim()
-    .isLength({min: 1, max: 1000}).withMessage('Content length 1-1000')
-    .notEmpty().withMessage('Content is required'),
+        .trim()
+        .isLength({min: 1, max: 1000}).withMessage('Content length 1-1000')
+        .notEmpty().withMessage('Content is required'),
 
     body('blogId')
         .custom(async(value)=>{

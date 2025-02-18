@@ -34,7 +34,7 @@ postsRouter.put('/:id',
     inputCheckErrorsMiddleware,
     async (req, res) => {
         const updated = await postRepository.update(req.params.id, req.body);
-        updated ? res.status(204) : res.sendStatus(404);
+        updated ? res.sendStatus(204) : res.sendStatus(404);
 
     });
 
@@ -42,5 +42,5 @@ postsRouter.delete('/:id',
     authMiddleware,
     async (req, res) => {
         const deleted = await postRepository.delete(req.params.id);
-        deleted ? res.status(204) : res.sendStatus(404)
+        deleted ? res.sendStatus(204) : res.sendStatus(404);
     });

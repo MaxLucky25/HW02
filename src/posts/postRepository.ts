@@ -46,7 +46,7 @@ export const postRepository = {
 
     async delete(id: string): Promise<boolean> {
         const index = db.posts.findIndex(p => p.id === id);
-        if ( index=== -1) return false;
+        if ( index === -1) return false;
 
         db.posts.splice(index, 1);
         return true;
