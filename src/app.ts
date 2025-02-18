@@ -1,8 +1,8 @@
 import express from 'express';
-import cors from 'cors'
 import { testingRouter } from './testing/router';
 import { blogsRouter } from './blogs/routers';
 import { postsRouter } from './posts/routers';
+import cors from 'cors'
 
 
 

@@ -9,4 +9,4 @@ testingRouter.delete('/all-data', (req, res) => {
     db.blogs =[];
     db.posts =[];
     res.sendStatus(204)
-})
+});
