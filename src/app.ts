@@ -15,7 +15,7 @@ app.use(cors());
 
 app.use('/blogs', blogsRouter);
 app.use('/posts', postsRouter);
-app.use('testing',testingRouter);
+app.use('/testing',testingRouter);
 
 
 
